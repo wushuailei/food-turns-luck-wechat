@@ -3,9 +3,7 @@
   "miniprogramRoot": "miniprogram/",
   "compileType": "miniprogram",
   "setting": {
-    "useCompilerPlugins": [
-      "typescript"
-    ],
+    "useCompilerPlugins": ["typescript"],
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
@@ -19,7 +17,7 @@
     "packNpmRelationList": [
       {
         "packageJsonPath": "./package.json",
-        "miniprogramNpmDistDir": "./"
+        "miniprogramNpmDistDir": "./miniprogram"
       }
     ],
     "ignoreUploadUnusedFiles": true,
