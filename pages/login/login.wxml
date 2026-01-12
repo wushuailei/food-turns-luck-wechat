@@ -1,0 +1,41 @@
+<view class="login-container">
+  <!-- 背景装饰 -->
+  <view class="bg-decoration">
+    <view class="circle circle-1"></view>
+    <view class="circle circle-2"></view>
+    <view class="circle circle-3"></view>
+  </view>
+  <!-- 主内容区 -->
+  <view class="content-wrapper">
+    <!-- Logo 和标题区 -->
+    <view class="header-section">
+      <view class="logo-wrapper">
+        <image class="logo" src="/assets/logo.png" mode="aspectFit"></image>
+      </view>
+      <view class="title">食来运转</view>
+      <view class="subtitle">美食记录，幸运相伴</view>
+    </view>
+    <!-- 登录卡片 -->
+    <view class="login-card">
+      <view class="card-title">欢迎回来</view>
+      <view class="card-subtitle">使用微信账号登录</view>
+      <!-- 登录按钮 -->
+      <button class="login-btn {{isLoading ? 'loading' : ''}}" open-type="getUserInfo" bindgetuserinfo="handleGetUserInfo" disabled="{{isLoading}}">
+        <t-loading wx:if="{{isLoading}}" theme="circular" size="48rpx" inherit-color />
+        <text class="btn-text">{{isLoading ? '登录中...' : '微信一键登录'}}</text>
+      </button>
+      <!-- 提示信息 -->
+      <view class="tips">
+        <t-icon name="info-circle" size="28rpx" color="#999" />
+        <text>登录即表示同意</text>
+        <text class="link">《用户协议》</text>
+        <text>和</text>
+        <text class="link">《隐私政策》</text>
+      </view>
+    </view>
+    <!-- 底部装饰 -->
+    <view class="footer">
+      <view class="footer-text">让美食带来好运气</view>
+    </view>
+  </view>
+</view>
