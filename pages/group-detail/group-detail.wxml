@@ -1,0 +1,158 @@
+<view class="group-detail-container">
+  <!-- 用户组信息 -->
+  <view wx:if="{{group}}" class="group-info-section">
+    <view class="group-header">
+      <t-avatar
+        image="{{group.avatar_key || ''}}"
+        size="80rpx"
+        icon="{{group.avatar_key ? '' : 'user-group'}}"
+      />
+      <view class="group-header-text">
+        <view class="group-name">{{group.name || '未命名用户组'}}</view>
+        <view class="group-meta">
+          <t-tag
+            size="small"
+            theme="{{group.group_type === 'family' ? 'primary' : 'success'}}"
+            variant="light"
+          >
+            {{group.group_type === 'family' ? '家庭' : '伙伴'}}
+          </t-tag>
+          <text class="create-time">创建于 {{group.created_at}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <t-divider />
+
+  <!-- 成员列表 -->
+  <view class="members-section">
+    <view class="section-title">
+      <text>成员列表</text>
+      <text class="member-count">{{members.length}}人</text>
+    </view>
+
+    <t-cell-group>
+      <t-cell
+        wx:for="{{members}}"
+        wx:key="user_id"
+      >
+        <view slot="left-icon">
+          <t-avatar
+            image="{{item.avatar_key || ''}}"
+            size="medium"
+            icon="{{item.avatar_key ? '' : 'user'}}"
+          />
+        </view>
+
+        <view slot="title" class="member-info">
+          <view class="member-name">{{item.nickname || '未知用户'}}</view>
+          <view class="member-meta">
+            <t-tag
+              size="small"
+              theme="{{item.role === 'owner' ? 'warning' : 'default'}}"
+              variant="light"
+            >
+              {{item.role === 'owner' ? '创建者' : '成员'}}
+            </t-tag>
+            <t-tag
+              wx:if="{{item.can_manage === 1 && item.role !== 'owner'}}"
+              size="small"
+              theme="primary"
+              variant="light"
+            >
+              管理员
+            </t-tag>
+            <text class="join-time">{{item.joined_at}}</text>
+          </view>
+        </view>
+
+        <!-- 操作按钮（仅管理员可见，且不能操作创建者） -->
+        <view slot="note" wx:if="{{canManage && item.role !== 'owner' && item.user_id !== currentUserId}}">
+          <t-button
+            size="small"
+            theme="danger"
+            variant="outline"
+            data-member="{{item}}"
+            bindtap="handleRemoveMember"
+          >
+            移除
+          </t-button>
+        </view>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 操作按钮区域 -->
+  <view class="actions-section">
+    <!-- 添加成员（管理员可见） -->
+    <t-button
+      wx:if="{{canManage}}"
+      theme="primary"
+      size="large"
+      icon="user-add"
+      bindtap="handleAddMember"
+      block
+    >
+      添加成员
+    </t-button>
+
+    <!-- 编辑用户组（创建者可见） -->
+    <t-button
+      wx:if="{{isOwner}}"
+      theme="default"
+      size="large"
+      icon="edit"
+      bindtap="handleEdit"
+      block
+    >
+      编辑用户组
+    </t-button>
+
+    <!-- 删除用户组（创建者可见） -->
+    <t-button
+      wx:if="{{isOwner}}"
+      theme="danger"
+      size="large"
+      icon="delete"
+      bindtap="handleShowDeleteDialog"
+      block
+    >
+      删除用户组
+    </t-button>
+
+    <!-- 退出用户组（非创建者可见） -->
+    <t-button
+      wx:if="{{!isOwner && currentUserRole}}"
+      theme="warning"
+      size="large"
+      icon="logout"
+      bindtap="handleShowLeaveDialog"
+      block
+    >
+      退出用户组
+    </t-button>
+  </view>
+
+  <!-- 删除确认对话框 -->
+  <t-dialog
+    visible="{{showDeleteDialog}}"
+    title="确认删除"
+    content="删除后将无法恢复，确定要删除这个用户组吗？"
+    confirm-btn="确认删除"
+    cancel-btn="取消"
+    bind:confirm="handleConfirmDelete"
+    bind:cancel="{{() => setData({showDeleteDialog: false})}}"
+  />
+
+  <!-- 退出确认对话框 -->
+  <t-dialog
+    visible="{{showLeaveDialog}}"
+    title="确认退出"
+    content="退出后需要重新加入才能查看用户组信息，确定要退出吗？"
+    confirm-btn="确认退出"
+    cancel-btn="取消"
+    bind:confirm="handleConfirmLeave"
+    bind:cancel="{{() => setData({showLeaveDialog: false})}}"
+  />
+</view>

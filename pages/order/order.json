@@ -1,8 +1,7 @@
 {
-  "navigationBarTitleText": "美食转运",
+  "navigationBarTitleText": "订单",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "t-search": "tdesign-miniprogram/search/search",
     "t-empty": "tdesign-miniprogram/empty/empty"
   }
 }

@@ -1,4 +1,4 @@
-import { request, showToast, isLoggedIn } from "../../utils/api";
+import { request, showToast, isLoggedIn } from "../../api/index";
 
 Page({
     data: {
@@ -11,7 +11,7 @@ Page({
     onLoad() {
         // 检查是否已登录
         if (isLoggedIn()) {
-            // 已登录，跳转到首页
+            // 已登录，跳转到首�?
             this.navigateToHome();
         }
     },
@@ -23,12 +23,12 @@ Page({
         console.log("获取用户信息:", e);
 
         if (e.detail.errMsg === "getUserInfo:ok") {
-            // 用户同意授权，开始登录
+            // 用户同意授权，开始登�?
             this.login();
         } else {
             // 用户拒绝授权
             showToast({
-                title: "需要授权才能登录",
+                title: "需要授权才能登�?,
                 icon: "none",
             });
         }
@@ -44,7 +44,7 @@ Page({
         wx.login({
             success: (res) => {
                 if (res.code) {
-                    // 2. 将 code 发送到后端
+                    // 2. �?code 发送到后端
                     this.sendCodeToBackend(res.code);
                 } else {
                     this.handleLoginError("获取登录凭证失败");
@@ -57,7 +57,7 @@ Page({
     },
 
     /**
-     * 发送 code 到后端
+     * 发�?code 到后�?
      */
     async sendCodeToBackend(code) {
         try {
@@ -75,7 +75,7 @@ Page({
             }
         } catch (error) {
             console.error("请求失败:", error);
-            this.handleLoginError("网络请求失败，请检查网络连接");
+            this.handleLoginError("网络请求失败，请检查网络连�?);
         } finally {
             this.setData({ isLoading: false });
         }
@@ -85,21 +85,27 @@ Page({
      * 处理登录成功
      */
     handleLoginSuccess(data) {
-        // 保存 token 和用户信息
+        // 保存 token 和用户信息（同步保存，确保立即生效）
         wx.setStorageSync("token", data.token);
         wx.setStorageSync("userInfo", data.user);
+
+        // 更新全局用户信息
+        const app = getApp();
+        if (app) {
+            app.globalData.userInfo = data.user;
+        }
 
         // 显示成功提示
         showToast({
             title: "登录成功",
             icon: "success",
-            duration: 1500,
+            duration: 1000,
         });
 
-        // 延迟跳转，让用户看到成功提示
+        // 短暂延迟后跳转，确保 storage 已完全写�?
         setTimeout(() => {
             this.navigateToHome();
-        }, 1500);
+        }, 1000);
     },
 
     /**
@@ -116,17 +122,11 @@ Page({
     },
 
     /**
-     * 跳转到首页
+     * 跳转到首�?
      */
     navigateToHome() {
         wx.switchTab({
             url: "/pages/index/index",
-            fail: () => {
-                // 如果不是 tabBar 页面，使用 redirectTo
-                wx.redirectTo({
-                    url: "/pages/index/index",
-                });
-            },
         });
     },
 });

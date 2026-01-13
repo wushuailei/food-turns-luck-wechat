@@ -1,0 +1,36 @@
+<!--我的收藏页-->
+<view class="container">
+    <!-- 收藏列表 -->
+    <view class="recipe-list" wx:if="{{!loading && favorites.length > 0}}">
+        <view 
+            class="recipe-card" 
+            wx:for="{{favorites}}" 
+            wx:key="recipe_id"
+            bind:tap="goToDetail"
+            data-id="{{item.recipe_id}}"
+        >
+            <image class="recipe-cover" src="{{item.recipe_cover_image_key || '/assets/images/default-recipe.png'}}" mode="aspectFill" />
+            <view class="recipe-info">
+                <view class="recipe-name">{{item.recipe_name}}</view>
+                <view class="recipe-desc" wx:if="{{item.recipe_description}}">{{item.recipe_description}}</view>
+                <view class="recipe-meta">
+                    <text class="meta-item">收藏于 {{item.created_at}}</text>
+                </view>
+            </view>
+            <view class="recipe-actions">
+                <text class="action-btn delete" catch:tap="removeFavorite" data-id="{{item.recipe_id}}">取消收藏</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && favorites.length === 0}}">
+        <text class="empty-text">还没有收藏菜谱</text>
+        <text class="empty-hint" bind:tap="goToHome">去首页看看</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+        <t-loading theme="circular" size="large" text="加载中..." />
+    </view>
+</view>

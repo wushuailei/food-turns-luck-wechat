@@ -1,0 +1,46 @@
+<view class="group-form-container">
+  <view class="form-content">
+    <!-- 头像选择 -->
+    <view class="avatar-section" bindtap="handleChooseAvatar">
+      <t-avatar
+        image="{{formData.avatar_key || ''}}"
+        size="large"
+        icon="{{formData.avatar_key ? '' : 'user-group'}}"
+      />
+      <view class="avatar-tip">点击更换头像</view>
+    </view>
+
+    <!-- 表单字段 -->
+    <t-cell-group theme="card">
+      <t-input
+        label="组名称"
+        placeholder="请输入用户组名称"
+        value="{{formData.name}}"
+        data-key="name"
+        bindchange="onInputChange"
+      />
+      
+      <t-cell title="组类型">
+        <t-radio-group
+          value="{{formData.group_type}}"
+          borderless
+          bindchange="onTypeChange"
+        >
+          <t-radio value="family" label="家庭" />
+          <t-radio value="partner" label="伙伴" />
+        </t-radio-group>
+      </t-cell>
+    </t-cell-group>
+
+    <view class="submit-btn-container">
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        bindtap="handleSubmit"
+      >
+        {{mode === 'create' ? '创建用户组' : '保存修改'}}
+      </t-button>
+    </view>
+  </view>
+</view>

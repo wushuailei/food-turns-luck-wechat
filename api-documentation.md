@@ -9,6 +9,8 @@
 - [菜谱接口 (Recipe)](#菜谱接口-recipe)
 - [用户组接口 (Group)](#用户组接口-group)
 - [订单接口 (Order)](#订单接口-order)
+- [图片接口 (Image)](#图片接口-image)
+- [清理接口 (Cleanup)](#清理接口-cleanup)
 
 ---
 
@@ -35,6 +37,7 @@
   "data": {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "user": {
+      "uid": "short_uid",
       "nickname": "用户昵称",
       "avatar_key": "头像key"
     }
@@ -834,6 +837,48 @@ Authorization: Bearer {token}
 
 ---
 
+### 10. 搜索用户
+
+**接口地址**: `POST /group/search_users`
+
+**描述**: 通过昵称（模糊）或 UID（模糊）搜索用户，用于添加成员
+
+**请求头**:
+```
+Authorization: Bearer {token}
+```
+
+**请求参数**:
+```json
+{
+  "keyword": "string"  // 搜索关键词 (昵称或UID)
+}
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "搜索成功",
+  "data": {
+    "list": [
+      {
+        "id": "openid",
+        "uid": "short_uid",
+        "nickname": "用户昵称",
+        "avatar_key": "头像key"
+      }
+    ]
+  }
+}
+```
+
+**错误码**:
+- `400`: 请输入搜索关键词
+- `401`: 未登录
+
+---
+
 ## 订单接口 (Order)
 
 ### 1. 创建订单
@@ -1186,3 +1231,89 @@ Authorization: Bearer {token}
 ```
 
 Token 通过登录接口获取，有效期为 7 天。
+
+---
+
+## 图片接口 (Image)
+
+### 1. 上传图片
+
+**接口地址**: `POST /upload/image`
+
+**描述**: 上传图片到 R2，支持 jpeg, png, webp, gif 格式，最大 10MB。上传后状态为 `temporary`。
+
+**请求头**:
+```
+Authorization: Bearer {token}
+Content-Type: multipart/form-data
+```
+
+**请求参数 (Form Data)**:
+- `file`: 图片文件 (Binary)
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "图片上传成功",
+  "data": {
+    "image_key": "images/user_123/1705000000-random.jpg",
+    "file_size": 102400,
+    "mime_type": "image/jpeg"
+  }
+}
+```
+
+**错误码**:
+- `400`: 未上传文件 / 文件类型不支持 / 文件过大
+- `401`: 未登录
+
+---
+
+## 清理接口 (Cleanup)
+
+### 1. 清理临时图片
+
+**接口地址**: `POST /cleanup/temporary-images`
+
+**描述**: 清理超过 24 小时未被引用的临时图片。
+
+**请求头**:
+```
+Authorization: Bearer {token} (建议仅限管理员)
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "临时图片清理成功",
+  "data": {
+    "deleted_count": 5,
+    "keys": ["images/user_123/old1.jpg", "..."]
+  }
+}
+```
+
+### 2. 清理孤儿图片
+
+**接口地址**: `POST /cleanup/orphaned-images`
+
+**描述**: 清理状态为 permanent 但已被标记为删除超过 7 天的孤儿图片。
+
+**请求头**:
+```
+Authorization: Bearer {token} (建议仅限管理员)
+```
+
+**响应示例**:
+```json
+{
+  "code": 200,
+  "message": "孤儿图片清理成功",
+  "data": {
+    "deleted_count": 2,
+    "keys": ["images/user_123/orphan1.jpg", "..."]
+  }
+}
+```

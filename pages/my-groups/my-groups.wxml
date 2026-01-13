@@ -1,0 +1,63 @@
+<view class="my-groups-container">
+  <!-- 用户组列表 -->
+  <view wx:if="{{!isEmpty}}" class="groups-list">
+    <t-cell-group>
+      <t-cell
+        wx:for="{{groups}}"
+        wx:key="id"
+        data-group-id="{{item.id}}"
+        bindtap="handleGroupTap"
+        hover
+        arrow
+      >
+        <view slot="left-icon" class="group-avatar">
+          <t-avatar
+            image="{{item.avatar_key || ''}}"
+            size="large"
+            icon="{{item.avatar_key ? '' : 'user-group'}}"
+          />
+        </view>
+        
+        <view slot="title" class="group-info">
+          <view class="group-name">{{item.name || '未命名用户组'}}</view>
+          <view class="group-meta">
+            <t-tag
+              size="small"
+              theme="{{item.group_type === 'family' ? 'primary' : 'success'}}"
+              variant="light"
+            >
+              {{item.group_type === 'family' ? '家庭' : '伙伴'}}
+            </t-tag>
+            <text class="role-text">{{item.role === 'owner' ? '创建者' : '成员'}}</text>
+            <text class="member-count">{{item.member_count || 0}}人</text>
+          </view>
+        </view>
+      </t-cell>
+    </t-cell-group>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:if="{{isEmpty && !loading}}" class="empty-container">
+    <t-empty
+      icon="user-group"
+      description="还没有加入任何用户组"
+    >
+      <t-button slot="action" theme="primary" size="medium" bindtap="handleCreateGroup">
+        创建用户组
+      </t-button>
+    </t-empty>
+  </view>
+
+  <!-- 创建按钮（悬浮） -->
+  <view wx:if="{{!isEmpty}}" class="create-btn-container">
+    <t-button
+      theme="primary"
+      size="large"
+      icon="add"
+      bindtap="handleCreateGroup"
+      block
+    >
+      创建用户组
+    </t-button>
+  </view>
+</view>

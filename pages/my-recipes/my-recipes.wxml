@@ -1,0 +1,44 @@
+<!--我的菜谱页-->
+<view class="container">
+    <!-- 菜谱列表 -->
+    <view class="recipe-list" wx:if="{{!loading && recipes.length > 0}}">
+        <view 
+            class="recipe-card" 
+            wx:for="{{recipes}}" 
+            wx:key="id"
+            bind:tap="goToDetail"
+            data-id="{{item.id}}"
+        >
+            <image class="recipe-cover" src="{{item.cover_image_key || '/assets/images/default-recipe.png'}}" mode="aspectFill" />
+            <view class="recipe-info">
+                <view class="recipe-name">{{item.name}}</view>
+                <view class="recipe-desc" wx:if="{{item.description}}">{{item.description}}</view>
+                <view class="recipe-meta">
+                    <text class="meta-item">👁 {{item.view_count}}</text>
+                    <text class="meta-item">👍 {{item.like_count}}</text>
+                    <text class="meta-item">{{item.is_public ? '公开' : '私密'}}</text>
+                </view>
+            </view>
+            <view class="recipe-actions">
+                <text class="action-btn" catch:tap="editRecipe" data-id="{{item.id}}">编辑</text>
+                <text class="action-btn delete" catch:tap="deleteRecipe" data-id="{{item.id}}">删除</text>
+            </view>
+        </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && recipes.length === 0}}">
+        <text class="empty-text">还没有创建菜谱</text>
+        <text class="empty-hint" bind:tap="createRecipe">点击创建第一个菜谱</text>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+        <t-loading theme="circular" size="large" text="加载中..." />
+    </view>
+</view>
+
+<!-- 悬浮创建按钮 -->
+<view class="fab" bind:tap="createRecipe">
+    <text class="fab-icon">+</text>
+</view>

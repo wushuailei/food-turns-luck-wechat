@@ -1,0 +1,73 @@
+<!--菜谱详情页-->
+<view class="container" wx:if="{{!loading && recipe}}">
+    <!-- 封面图 -->
+    <view class="cover-section">
+        <image class="cover-image" src="{{recipe.cover_image_key || '/assets/images/default-recipe.png'}}" mode="aspectFill" />
+    </view>
+
+    <!-- 基本信息 -->
+    <view class="info-section">
+        <view class="recipe-title">{{recipe.name}}</view>
+        <view class="recipe-desc" wx:if="{{recipe.description}}">{{recipe.description}}</view>
+
+        <!-- 统计信息 -->
+        <view class="stats-row">
+            <view class="stat-item">
+                <text class="icon">👁</text>
+                <text class="text">{{recipe.view_count}}</text>
+            </view>
+            <view class="stat-item">
+                <text class="icon">👍</text>
+                <text class="text">{{recipe.like_count}}</text>
+            </view>
+        </view>
+
+        <!-- 标签 -->
+        <view class="tags-row" wx:if="{{recipe.tags && recipe.tags.length > 0}}">
+            <view class="tag" wx:for="{{recipe.tags}}" wx:key="index">{{item}}</view>
+        </view>
+    </view>
+
+    <!-- 步骤内容 -->
+    <view class="steps-section" wx:if="{{recipe.step_type === 'custom' && recipe.steps}}">
+        <view class="section-title">制作步骤</view>
+        <view class="step-item" wx:for="{{parseSteps(recipe.steps)}}" wx:key="index">
+            <view class="step-number">{{index + 1}}</view>
+            <view class="step-content">{{item}}</view>
+        </view>
+    </view>
+
+    <!-- 链接内容 -->
+    <view class="links-section" wx:if="{{recipe.step_type === 'link' && recipe.links}}">
+        <view class="section-title">参考链接</view>
+        <view class="link-item" wx:for="{{parseLinks(recipe.links)}}" wx:key="index">
+            <text class="link-text">{{item}}</text>
+        </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="action-bar">
+        <t-button 
+            theme="{{isFavorited ? 'default' : 'primary'}}" 
+            size="large" 
+            bind:tap="toggleFavorite"
+            wx:if="{{!isOwner}}"
+        >
+            {{isFavorited ? '取消收藏' : '收藏'}}
+        </t-button>
+        
+        <view class="owner-actions" wx:if="{{isOwner}}">
+            <t-button theme="primary" size="large" bind:tap="editRecipe">
+                编辑菜谱
+            </t-button>
+            <t-button theme="danger" size="large" bind:tap="deleteRecipe">
+                删除菜谱
+            </t-button>
+        </view>
+    </view>
+</view>
+
+<!-- 加载状态 -->
+<view class="loading-state" wx:if="{{loading}}">
+    <t-loading theme="circular" size="large" text="加载中..." />
+</view>

@@ -1,0 +1,54 @@
+.my-groups-container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 100rpx;
+}
+
+.groups-list {
+  padding: 20rpx 0;
+}
+
+.group-avatar {
+  margin-right: 20rpx;
+}
+
+.group-info {
+  flex: 1;
+}
+
+.group-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.group-meta {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.role-text {
+  color: #666;
+}
+
+.member-count {
+  color: #999;
+}
+
+.empty-container {
+  padding-top: 200rpx;
+}
+
+.create-btn-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20rpx 32rpx;
+  background-color: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0, 0, 0, 0.08);
+}

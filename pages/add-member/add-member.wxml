@@ -1,0 +1,74 @@
+<view class="add-member-container">
+  <!-- 搜索区域 -->
+  <view class="search-section">
+    <t-input
+      placeholder="请输入用户ID或昵称搜索"
+      value="{{searchKeyword}}"
+      bindchange="onSearchInput"
+      clearable
+    >
+      <t-button slot="suffix" theme="primary" size="small" bindtap="handleSearch" loading="{{searching}}">
+        搜索
+      </t-button>
+    </t-input>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view wx:if="{{searchResult}}" class="result-section">
+    <view class="section-title">搜索结果</view>
+    <t-cell-group theme="card">
+      <t-cell
+        title="{{searchResult.nickname}}"
+        description="ID: {{searchResult.id}}"
+      >
+        <t-avatar
+          slot="left-icon"
+          image="{{searchResult.avatar_key || ''}}"
+          icon="{{searchResult.avatar_key ? '' : 'user'}}"
+        />
+        <t-icon slot="right-icon" name="check-circle-filled" color="#00a870" />
+      </t-cell>
+    </t-cell-group>
+
+    <!-- 权限设置 -->
+    <view class="settings-section">
+      <view class="section-title">权限设置</view>
+      <t-cell-group theme="card">
+        <t-cell title="角色">
+          <t-radio-group
+            value="{{role}}"
+            borderless
+            bindchange="onRoleChange"
+          >
+            <t-radio value="member" label="普通成员" />
+            <t-radio value="owner" label="管理员" />
+          </t-radio-group>
+        </t-cell>
+        
+        <t-cell title="管理权限" description="允许该成员添加/移除其他成员">
+          <t-switch 
+            value="{{canManage}}" 
+            bindchange="onManageChange"
+            disabled="{{role === 'owner'}}" 
+          />
+        </t-cell>
+      </t-cell-group>
+    </view>
+
+    <view class="submit-btn-container">
+      <t-button
+        theme="primary"
+        size="large"
+        block
+        bindtap="handleSubmit"
+      >
+        确认添加
+      </t-button>
+    </view>
+  </view>
+
+  <!-- 空状态提示 -->
+  <view wx:else class="empty-tip">
+    请搜索要添加的用户
+  </view>
+</view>

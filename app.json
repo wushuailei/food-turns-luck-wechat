@@ -1,9 +1,44 @@
 {
-  "pages": ["pages/login/login"],
+  "pages": [
+    "pages/index/index",
+    "pages/order/order",
+    "pages/profile/profile",
+    "pages/login/login",
+    "pages/recipe-detail/recipe-detail",
+    "pages/recipe-form/recipe-form",
+    "pages/my-recipes/my-recipes",
+    "pages/my-favorites/my-favorites"
+  ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "美食转运",
     "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "selectedColor": "#0052D9",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "assets/icons/home.png",
+        "selectedIconPath": "assets/icons/home-active.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "assets/icons/order.png",
+        "selectedIconPath": "assets/icons/order-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "assets/icons/profile.png",
+        "selectedIconPath": "assets/icons/profile-active.png"
+      }
+    ]
   },
   "style": "v2",
   "componentFramework": "glass-easel",
