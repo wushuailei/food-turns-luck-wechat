@@ -8,7 +8,6 @@ export function createOrder(data) {
         url: "/order/create",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -20,7 +19,6 @@ export function editOrder(data) {
         url: "/order/edit",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -32,7 +30,6 @@ export function getOrderList(data) {
         url: "/order/list",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -44,7 +41,6 @@ export function getOrderDetail(id) {
         url: "/order/detail",
         method: "POST",
         data: { id },
-        needAuth: true,
     });
 }
 
@@ -56,6 +52,5 @@ export function createOrderReview(data) {
         url: "/order/review/create",
         method: "POST",
         data,
-        needAuth: true,
     });
 }

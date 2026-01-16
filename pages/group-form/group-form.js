@@ -17,7 +17,7 @@ Page({
             avatar_key: "",
             group_type: "family", // family | partner
         },
-        fileList: [], // 用于图片上传组件（如果有�?
+        fileList: [], // 用于图片上传组件（如果有）
     },
 
     onLoad(options) {
@@ -29,7 +29,7 @@ Page({
 
         // 设置标题
         wx.setNavigationBarTitle({
-            title: mode === "edit" ? "编辑用户�? : "创建用户�?,
+            title: mode === "edit" ? "编辑用户组" : "创建用户组",
         });
 
         if (mode === "edit" && groupId) {
@@ -38,11 +38,11 @@ Page({
     },
 
     /**
-     * 加载用户组数据（编辑模式�?
+     * 加载用户组数据（编辑模式）
      */
     async loadGroupData(groupId) {
         try {
-            showLoading("加载�?..");
+            showLoading("加载中..");
             const res = await getGroupDetail(groupId);
             if (res.code === 200) {
                 const { group } = res.data;
@@ -58,7 +58,7 @@ Page({
                 setTimeout(() => wx.navigateBack(), 1500);
             }
         } catch (error) {
-            console.error("加载用户组失�?", error);
+            console.error("加载用户组失败:", error);
             showToast({ title: "加载失败" });
         } finally {
             hideLoading();
@@ -66,7 +66,7 @@ Page({
     },
 
     /**
-     * 输入框变�?
+     * 输入框变化
      */
     onInputChange(e) {
         const { key } = e.currentTarget.dataset;
@@ -77,7 +77,7 @@ Page({
     },
 
     /**
-     * 组类型变�?
+     * 组类型变化
      */
     onTypeChange(e) {
         this.setData({
@@ -99,29 +99,23 @@ Page({
             if (res.tempFiles.length > 0) {
                 const filePath = res.tempFiles[0].tempFilePath;
 
-                showLoading("上传�?..");
-                // 调用预留的上传接�?
+                showLoading("上传中..");
                 try {
-                    // 暂时直接使用本地路径模拟，实际应上传获取 key
-                    // const key = await uploadImage(filePath);
-                    const key = filePath; // 模拟：直接使用路�?
-
+                    // 上传到服务器获取 key
+                    const uploadResult = await uploadImage(filePath);
                     this.setData({
-                        "formData.avatar_key": key
+                        "formData.avatar_key": uploadResult.image_key
                     });
-                    showToast({ title: "上传成功(模拟)", icon: "success" });
+                    showToast({ title: "上传成功", icon: "success" });
                 } catch (error) {
-                    // 如果上传接口未实现，暂时使用本地路径
-                    this.setData({
-                        "formData.avatar_key": filePath
-                    });
-                    showToast({ title: "已选择图片(未上�?", icon: "none" });
+                    console.error("上传失败:", error);
+                    showToast({ title: error.message || "上传失败", icon: "none" });
+                } finally {
+                    hideLoading();
                 }
             }
         } catch (error) {
             console.error("选择图片失败:", error);
-        } finally {
-            hideLoading();
         }
     },
 
@@ -137,7 +131,7 @@ Page({
         }
 
         try {
-            showLoading("提交�?..");
+            showLoading("提交中..");
             const apiFunc = this.data.mode === "create" ? createGroup : editGroup;
             const payload = {
                 name,

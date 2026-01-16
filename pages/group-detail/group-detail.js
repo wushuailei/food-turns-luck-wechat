@@ -50,11 +50,11 @@ Page({
     },
 
     /**
-     * 加载用户组详�?
+     * 加载用户组详情
      */
     async loadGroupDetail() {
         try {
-            showLoading("加载�?..");
+            showLoading("加载中..");
 
             const res = await getGroupDetail(this.data.groupId);
 
@@ -78,7 +78,7 @@ Page({
                 showToast({ title: res.message || "加载失败" });
             }
         } catch (error) {
-            console.error("加载用户组详情失�?", error);
+            console.error("加载用户组详情失败:", error);
             showToast({ title: "加载失败，请重试" });
         } finally {
             hideLoading();
@@ -86,7 +86,7 @@ Page({
     },
 
     /**
-     * 编辑用户�?
+     * 编辑用户组
      */
     handleEdit() {
         wx.navigateTo({
@@ -95,18 +95,18 @@ Page({
     },
 
     /**
-     * 显示删除确认对话�?
+     * 显示删除确认对话框
      */
     handleShowDeleteDialog() {
         this.setData({ showDeleteDialog: true });
     },
 
     /**
-     * 确认删除用户�?
+     * 确认删除用户组
      */
     async handleConfirmDelete() {
         try {
-            showLoading("删除�?..");
+            showLoading("删除中..");
 
             const res = await deleteGroup(this.data.groupId);
 
@@ -119,7 +119,7 @@ Page({
                 showToast({ title: res.message || "删除失败" });
             }
         } catch (error) {
-            console.error("删除用户组失�?", error);
+            console.error("删除用户组失败:", error);
             showToast({ title: "删除失败，请重试" });
         } finally {
             hideLoading();
@@ -143,7 +143,7 @@ Page({
 
         wx.showModal({
             title: "确认移除",
-            content: `确定要移除成�?${member.nickname}"吗？`,
+            content: `确定要移除成员${member.nickname}吗？`,
             success: async (res) => {
                 if (res.confirm) {
                     await this.removeMember(member.user_id);
@@ -157,7 +157,7 @@ Page({
      */
     async removeMember(targetUserId) {
         try {
-            showLoading("移除�?..");
+            showLoading("移除中..");
 
             const res = await removeGroupMember(this.data.groupId, targetUserId);
 
@@ -207,11 +207,11 @@ Page({
                     wx.navigateBack();
                 }, 1500);
             } else {
-                showToast({ title: res.message || "退出失�? });
+                showToast({ title: res.message || "退出失败" });
             }
         } catch (error) {
             console.error("退出用户组失败:", error);
-            showToast({ title: "退出失败，请重�? });
+            showToast({ title: "退出失败，请重试" });
         } finally {
             hideLoading();
         }

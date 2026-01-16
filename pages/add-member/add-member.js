@@ -9,7 +9,7 @@ const {
 Page({
     data: {
         groupId: "",
-        targetUserId: "", // 选中的用�?ID
+        targetUserId: "", // 选中的用户ID
         role: "member", // member | owner
         canManage: false,
         searchKeyword: "",
@@ -28,7 +28,7 @@ Page({
     },
 
     /**
-     * 输入搜索关键�?
+     * 输入搜索关键词
      */
     onSearchInput(e) {
         this.setData({
@@ -42,15 +42,15 @@ Page({
     async handleSearch() {
         const { searchKeyword } = this.data;
         if (!searchKeyword.trim()) {
-            showToast({ title: "请输入用户ID或昵�? });
+            showToast({ title: "请输入用户ID或昵称" });
             return;
         }
 
         try {
             this.setData({ searching: true });
 
-            // 调用预留的搜索接�?
-            // 暂时模拟：如果输入的是特定的 ID 格式，则假装找到了用�?
+            // 调用预留的搜索接口
+            // 暂时模拟：如果输入的是特定的 ID 格式，则假装找到了用户
             // 实际应该调用 searchUsers(searchKeyword)
 
             // 模拟延迟
@@ -59,7 +59,7 @@ Page({
             // 模拟搜索结果
             this.setData({
                 searchResult: {
-                    id: searchKeyword, // 暂时假设输入的即�?ID
+                    id: searchKeyword, // 暂时假设输入的即为用户ID
                     nickname: `用户_${searchKeyword.slice(0, 6)}`,
                     avatar_key: "",
                 },
@@ -115,7 +115,7 @@ Page({
         }
 
         try {
-            showLoading("添加�?..");
+            showLoading("添加中..");
             const res = await addGroupMember({
                 group_id: groupId,
                 target_user_id: targetUserId,

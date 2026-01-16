@@ -1,5 +1,5 @@
 // 订单页面
-import { request, showToast, showLoading, hideLoading } from "../../api/index";
+import { request, showToast, showLoading, hideLoading, getOrderList } from "../../api/index";
 
 Page({
     data: {
@@ -10,15 +10,15 @@ Page({
         pageSize: 10,
         total: 0,
         hasMore: true,
-        // 状态筛�?
+        // 状态筛选
         statusTabs: [
             { label: "全部", value: "" },
-            { label: "待完�?, value: "pending" },
-            { label: "已完�?, value: "completed" },
+            { label: "待完成", value: "pending" },
+            { label: "已完成", value: "completed" },
             { label: "超时", value: "timeout" },
         ],
         currentStatus: "",
-        // 加载状�?
+        // 加载状态
         loading: false,
         refreshing: false,
     },
@@ -35,7 +35,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        // 每次显示页面时刷新订单列�?
+        // 每次显示页面时刷新订单列表
         this.setData({ page: 1 });
         this.loadOrders(true);
     },
@@ -52,7 +52,7 @@ Page({
     },
 
     /**
-     * 页面上拉触底事件的处理函�?
+     * 页面上拉触底事件的处理函数
      */
     onReachBottom() {
         if (this.data.hasMore && !this.data.loading) {
@@ -72,7 +72,7 @@ Page({
         this.setData({ loading: true });
 
         if (!this.data.refreshing) {
-            showLoading("加载�?..");
+            showLoading("加载中..");
         }
 
         try {
@@ -83,17 +83,12 @@ Page({
                 order: "DESC",
             };
 
-            // 添加状态筛�?
+            // 添加状态筛选
             if (this.data.currentStatus) {
                 requestData.status = this.data.currentStatus;
             }
 
-            const res = await request({
-                url: "/order/list",
-                method: "POST",
-                data: requestData,
-                needAuth: true,
-            });
+            const res = await getOrderList(requestData);
 
             if (res.code === 200) {
                 const newList = res.data.list || [];
@@ -124,7 +119,7 @@ Page({
     },
 
     /**
-     * 状态筛选切�?
+     * 状态筛选切换
      */
     onStatusChange(e) {
         const status = e.currentTarget.dataset.status;
@@ -136,12 +131,12 @@ Page({
     },
 
     /**
-     * 获取状态文�?
+     * 获取状态文本
      */
     getStatusText(status) {
         const statusMap = {
-            pending: "待完�?,
-            completed: "已完�?,
+            pending: "待完成",
+            completed: "已完成",
             timeout: "超时",
         };
         return statusMap[status] || status;
@@ -155,7 +150,7 @@ Page({
     },
 
     /**
-     * 跳转到订单详�?
+     * 跳转到订单详情
      */
     goToOrderDetail(e) {
         const orderId = e.currentTarget.dataset.id;
@@ -165,7 +160,7 @@ Page({
     },
 
     /**
-     * 格式化时�?
+     * 格式化时间
      */
     formatTime(timeStr) {
         if (!timeStr) return "";
@@ -174,6 +169,6 @@ Page({
         const day = date.getDate();
         const hour = date.getHours();
         const minute = date.getMinutes();
-        return `${month}�?{day}�?${hour}:${minute < 10 ? "0" + minute : minute}`;
+        return `${month}月${day}日 ${hour}:${minute < 10 ? "0" + minute : minute}`;
     },
 });

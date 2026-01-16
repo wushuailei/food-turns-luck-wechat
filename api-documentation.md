@@ -1270,6 +1270,50 @@ Content-Type: multipart/form-data
 
 ---
 
+### 2. 获取图片
+
+**接口地址**: `GET /upload/image/{imageKey}`
+
+**描述**: 从 R2 获取图片，返回图片二进制数据。`imageKey` 是上传图片时返回的完整路径（如 `images/userId/timestamp-random.ext`）。
+
+**请求头**:
+```
+Authorization: Bearer {token}
+```
+
+**请求示例**:
+```
+GET /upload/image/images/user_123/1705000000-random.jpg
+```
+
+**响应**:
+- 成功时返回图片二进制数据
+- 响应头包含:
+  - `Content-Type`: 图片的 MIME 类型（如 `image/jpeg`）
+  - `Cache-Control`: `public, max-age=31536000, immutable`（缓存 1 年）
+  - `ETag`: 图片的 ETag 值
+
+**错误响应**:
+```json
+{
+  "code": 404,
+  "message": "图片不存在"
+}
+```
+
+**错误码**:
+- `400`: 缺少图片 key
+- `401`: 未登录
+- `404`: 图片不存在
+
+**使用说明**:
+- 此接口**需要**认证（需要在请求头中携带 token）
+- 图片 URL 需要在请求时附带 Authorization 头
+- 响应设置了长期缓存（1年），浏览器会自动缓存图片
+- 适合在小程序中使用 `wx.request` 或 `wx.downloadFile` 获取图片
+
+---
+
 ## 清理接口 (Cleanup)
 
 ### 1. 清理临时图片

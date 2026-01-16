@@ -1,5 +1,5 @@
-// 菜谱详情�?
-import { request, showToast, showLoading, hideLoading, getUserInfo } from "../../api/index";
+// 菜谱详情
+import { showToast, showLoading, hideLoading, getUserInfo, getRecipeDetail, getFavoritesList, addFavorite, removeFavorite, deleteRecipe } from "../../api/index";
 
 Page({
     data: {
@@ -34,19 +34,13 @@ Page({
      * 加载菜谱详情
      */
     async loadRecipeDetail() {
-        showLoading("加载�?..");
+        showLoading("加载中..");
 
         try {
-            const res = await request({
-                url: "/recipe/detail",
-                method: "POST",
-                data: {
-                    id: this.data.recipeId,
-                },
-            });
+            const res = await getRecipeDetail(this.data.recipeId);
 
             if (res.code === 200) {
-                // 检查是否是作�?
+                // 检查是否是作者
                 const userInfo = getUserInfo();
                 const isOwner = userInfo && res.data.user_id === userInfo.id;
 
@@ -56,7 +50,7 @@ Page({
                     loading: false,
                 });
 
-                // 检查收藏状�?
+                // 检查收藏状态
                 this.checkFavoriteStatus();
             } else {
                 showToast({
@@ -82,18 +76,13 @@ Page({
     },
 
     /**
-     * 检查收藏状�?
+     * 检查收藏状态
      */
     async checkFavoriteStatus() {
         try {
-            const res = await request({
-                url: "/user/favorites/list",
-                method: "POST",
-                data: {
-                    page: 1,
-                    pageSize: 100,
-                },
-                needAuth: true,
+            const res = await getFavoritesList({
+                page: 1,
+                pageSize: 100,
             });
 
             if (res.code === 200) {
@@ -105,7 +94,7 @@ Page({
                 });
             }
         } catch (error) {
-            console.error("检查收藏状态失�?", error);
+            console.error("检查收藏状态失败:", error);
         }
     },
 
@@ -116,14 +105,8 @@ Page({
         const url = this.data.isFavorited ? "/user/favorites/remove" : "/user/favorites/add";
 
         try {
-            const res = await request({
-                url,
-                method: "POST",
-                data: {
-                    recipe_id: this.data.recipeId,
-                },
-                needAuth: true,
-            });
+            const apiFunc = this.data.isFavorited ? removeFavorite : addFavorite;
+            const res = await apiFunc(this.data.recipeId);
 
             if (res.code === 200) {
                 this.setData({
@@ -163,7 +146,7 @@ Page({
     deleteRecipe() {
         wx.showModal({
             title: "确认删除",
-            content: "删除后无法恢复，确定要删除这个菜谱吗�?,
+            content: "删除后无法恢复，确定要删除这个菜谱吗?",
             success: async (res) => {
                 if (res.confirm) {
                     await this.performDelete();
@@ -176,17 +159,10 @@ Page({
      * 执行删除操作
      */
     async performDelete() {
-        showLoading("删除�?..");
+        showLoading("删除中..");
 
         try {
-            const res = await request({
-                url: "/recipe/delete",
-                method: "POST",
-                data: {
-                    id: this.data.recipeId,
-                },
-                needAuth: true,
-            });
+            const res = await deleteRecipe(this.data.recipeId);
 
             if (res.code === 200) {
                 showToast({

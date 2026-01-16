@@ -54,7 +54,7 @@ async function handle401Error(options) {
  * 发起 API 请求
  */
 export async function request(options) {
-    const { url, method = "POST", data, header = {}, needAuth = false } = options;
+    const { url, method = "POST", data, header = {}, needAuth = true } = options;
 
     // 如果需要认证，先确保已登录
     // 注意：如果是登录请求本身，或者是静默登录中调用的请求，这里会有循环引用问题

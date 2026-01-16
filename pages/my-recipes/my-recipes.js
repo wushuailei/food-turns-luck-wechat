@@ -1,5 +1,5 @@
-// 我的菜谱�?
-import { request, showToast, showLoading, hideLoading, getUserInfo } from "../../api/index";
+// 我的菜谱
+import { request, showToast, showLoading, hideLoading, getUserInfo, getRecipeList, deleteRecipe } from "../../api/index";
 
 Page({
     data: {
@@ -58,16 +58,11 @@ Page({
                 return;
             }
 
-            const res = await request({
-                url: "/recipe/list",
-                method: "POST",
-                data: {
-                    page: this.data.page,
-                    pageSize: this.data.pageSize,
-                    order_by: "created_at",
-                    order: "DESC",
-                },
-                needAuth: true,
+            const res = await getRecipeList({
+                page: this.data.page,
+                pageSize: this.data.pageSize,
+                order_by: "created_at",
+                order: "DESC",
             });
 
             if (res.code === 200) {
@@ -136,7 +131,7 @@ Page({
 
         wx.showModal({
             title: "确认删除",
-            content: "删除后无法恢复，确定要删除这个菜谱吗�?,
+            content: "删除后无法恢复，确定要删除这个菜谱吗?",
             success: async (res) => {
                 if (res.confirm) {
                     await this.performDelete(id);
@@ -149,15 +144,10 @@ Page({
      * 执行删除操作
      */
     async performDelete(id) {
-        showLoading("删除�?..");
+        showLoading("删除中..");
 
         try {
-            const res = await request({
-                url: "/recipe/delete",
-                method: "POST",
-                data: { id },
-                needAuth: true,
-            });
+            const res = await deleteRecipe(id);
 
             if (res.code === 200) {
                 showToast({

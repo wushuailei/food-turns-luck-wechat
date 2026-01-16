@@ -27,9 +27,9 @@
             <view class="label">封面图片</view>
             <view class="cover-upload">
                 <image 
-                    wx:if="{{formData.cover_image_key}}" 
+                    wx:if="{{coverImageUrl}}" 
                     class="cover-preview" 
-                    src="{{formData.cover_image_key}}" 
+                    src="{{coverImageUrl}}" 
                     mode="aspectFill"
                 />
                 <view class="upload-btn" bind:tap="uploadCover">

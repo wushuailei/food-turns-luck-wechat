@@ -8,7 +8,6 @@ export function createGroup(data) {
         url: "/group/create",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -20,7 +19,6 @@ export function editGroup(data) {
         url: "/group/edit",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -32,7 +30,6 @@ export function deleteGroup(groupId) {
         url: "/group/delete",
         method: "POST",
         data: { group_id: groupId },
-        needAuth: true,
     });
 }
 
@@ -43,7 +40,6 @@ export function getMyGroups() {
     return request({
         url: "/group/my-groups",
         method: "POST",
-        needAuth: true,
     });
 }
 
@@ -55,7 +51,6 @@ export function getGroupDetail(groupId) {
         url: "/group/detail",
         method: "POST",
         data: { group_id: groupId },
-        needAuth: true,
     });
 }
 
@@ -67,7 +62,6 @@ export function addGroupMember(data) {
         url: "/group/members/add",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -79,7 +73,6 @@ export function removeGroupMember(groupId, targetUserId) {
         url: "/group/members/remove",
         method: "POST",
         data: { group_id: groupId, target_user_id: targetUserId },
-        needAuth: true,
     });
 }
 
@@ -91,7 +84,6 @@ export function updateMemberPermissions(data) {
         url: "/group/members/update",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -103,6 +95,5 @@ export function leaveGroup(groupId) {
         url: "/group/leave",
         method: "POST",
         data: { group_id: groupId },
-        needAuth: true,
     });
 }

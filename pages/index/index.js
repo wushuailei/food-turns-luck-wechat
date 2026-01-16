@@ -1,5 +1,5 @@
 // 首页 - 菜谱列表
-import { request, showToast, showLoading, hideLoading } from "../../api/index";
+import { showToast, showLoading, hideLoading, getTags, getRecipeList } from "../../api/index";
 
 Page({
     data: {
@@ -10,14 +10,14 @@ Page({
         pageSize: 10,
         total: 0,
         hasMore: true,
-        // 搜索和筛�?
+        // 搜索和筛选
         searchKeyword: "",
         selectedTag: "",
         tags: [],
         // 排序
         orderBy: "created_at", // view_count, like_count, created_at
         order: "DESC",
-        // 加载状�?
+        // 加载状态
         loading: false,
         refreshing: false,
     },
@@ -43,7 +43,7 @@ Page({
     },
 
     /**
-     * 页面上拉触底事件的处理函�?
+     * 页面上拉触底事件的处理函数
      */
     onReachBottom() {
         if (this.data.hasMore && !this.data.loading) {
@@ -59,13 +59,7 @@ Page({
      */
     async loadTags() {
         try {
-            const res = await request({
-                url: "/recipe/tags",
-                method: "POST",
-                data: {
-                    with_count: false,
-                },
-            });
+            const res = await getTags(false);
 
             if (res.code === 200) {
                 this.setData({
@@ -86,7 +80,7 @@ Page({
         this.setData({ loading: true });
 
         if (!this.data.refreshing) {
-            showLoading("加载�?..");
+            showLoading("加载中..");
         }
 
         try {
@@ -97,17 +91,12 @@ Page({
                 order: this.data.order,
             };
 
-            // 添加搜索关键�?
+            // 添加搜索关键词
             if (this.data.searchKeyword) {
                 requestData.name = this.data.searchKeyword;
             }
 
-            const res = await request({
-                url: "/recipe/list",
-                method: "POST",
-                data: requestData,
-                needAuth: true,
-            });
+            const res = await getRecipeList(requestData);
 
             if (res.code === 200) {
                 const newList = res.data.list || [];
@@ -138,7 +127,7 @@ Page({
     },
 
     /**
-     * 搜索框输�?
+     * 搜索框输入
      */
     onSearchInput(e) {
         this.setData({
@@ -157,7 +146,7 @@ Page({
     },
 
     /**
-     * 标签筛�?
+     * 标签筛选
      */
     onTagSelect(e) {
         const tag = e.currentTarget.dataset.tag;
@@ -181,7 +170,7 @@ Page({
     },
 
     /**
-     * 跳转到菜谱详�?
+     * 跳转到菜谱详情
      */
     goToRecipeDetail(e) {
         const recipeId = e.currentTarget.dataset.id;
@@ -190,7 +179,7 @@ Page({
         });
     },
     /**
-     * 跳转到菜谱详�?
+     * 跳转到菜谱详情   
      */
     goToRecipeDetail(e) {
         const id = e.currentTarget.dataset.id;

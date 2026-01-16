@@ -8,7 +8,6 @@ export function getRecipeList(data) {
         url: "/recipe/list",
         method: "POST",
         data,
-        needAuth: false, // 公开接口，但登录后能看到更多
     });
 }
 
@@ -20,7 +19,6 @@ export function getRecipeDetail(id) {
         url: "/recipe/detail",
         method: "POST",
         data: { id },
-        needAuth: false,
     });
 }
 
@@ -32,7 +30,6 @@ export function createRecipe(data) {
         url: "/recipe/create",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -44,7 +41,6 @@ export function editRecipe(data) {
         url: "/recipe/edit",
         method: "POST",
         data,
-        needAuth: true,
     });
 }
 
@@ -56,7 +52,6 @@ export function deleteRecipe(id) {
         url: "/recipe/delete",
         method: "POST",
         data: { id },
-        needAuth: true,
     });
 }
 
@@ -68,7 +63,6 @@ export function getTags(withCount = false) {
         url: "/recipe/tags",
         method: "POST",
         data: { with_count: withCount },
-        needAuth: false,
     });
 }
 
@@ -90,6 +84,5 @@ export function getMyRecipes(data) {
         url: "/recipe/list",
         method: "POST",
         data: { ...data, user_id: "me" }, // 这是一个假设的参数，具体看后端实现，或者复用 list
-        needAuth: true,
     });
 }

@@ -11,7 +11,7 @@ Page({
     onLoad() {
         // 检查是否已登录
         if (isLoggedIn()) {
-            // 已登录，跳转到首�?
+            // 已登录，跳转到首?
             this.navigateToHome();
         }
     },
@@ -23,12 +23,12 @@ Page({
         console.log("获取用户信息:", e);
 
         if (e.detail.errMsg === "getUserInfo:ok") {
-            // 用户同意授权，开始登�?
+            // 用户同意授权，开始登录
             this.login();
         } else {
             // 用户拒绝授权
             showToast({
-                title: "需要授权才能登�?,
+                title: "需要授权才能登录",
                 icon: "none",
             });
         }
@@ -44,7 +44,7 @@ Page({
         wx.login({
             success: (res) => {
                 if (res.code) {
-                    // 2. �?code 发送到后端
+                    // 2. code 发送到后端
                     this.sendCodeToBackend(res.code);
                 } else {
                     this.handleLoginError("获取登录凭证失败");
@@ -57,7 +57,7 @@ Page({
     },
 
     /**
-     * 发�?code 到后�?
+     * 发送code 到后端
      */
     async sendCodeToBackend(code) {
         try {
@@ -75,7 +75,7 @@ Page({
             }
         } catch (error) {
             console.error("请求失败:", error);
-            this.handleLoginError("网络请求失败，请检查网络连�?);
+            this.handleLoginError("网络请求失败，请检查网络连?");
         } finally {
             this.setData({ isLoading: false });
         }
@@ -102,7 +102,7 @@ Page({
             duration: 1000,
         });
 
-        // 短暂延迟后跳转，确保 storage 已完全写�?
+        // 短暂延迟后跳转，确保 storage 已完全写?
         setTimeout(() => {
             this.navigateToHome();
         }, 1000);
@@ -122,7 +122,7 @@ Page({
     },
 
     /**
-     * 跳转到首�?
+     * 跳转到首?
      */
     navigateToHome() {
         wx.switchTab({

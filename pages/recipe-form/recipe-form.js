@@ -1,5 +1,5 @@
-// 菜谱表单�?
-import { request, showToast, showLoading, hideLoading } from "../../api/index";
+// 菜谱表单
+import { showToast, showLoading, hideLoading, uploadImage, getTags, getRecipeDetail, createRecipe, editRecipe, getImageUrl } from "../../api/index";
 
 Page({
     data: {
@@ -12,6 +12,7 @@ Page({
             step_type: "custom",
             is_public: true,
         },
+        coverImageUrl: "", // 用于显示的图片 URL
         steps: [""],
         links: [""],
         allTags: [],
@@ -38,21 +39,15 @@ Page({
      * 加载菜谱数据（编辑模式）
      */
     async loadRecipeData() {
-        showLoading("加载�?..");
+        showLoading("加载中..");
 
         try {
-            const res = await request({
-                url: "/recipe/detail",
-                method: "POST",
-                data: {
-                    id: this.data.recipeId,
-                },
-            });
+            const res = await getRecipeDetail(this.data.recipeId);
 
             if (res.code === 200) {
                 const recipe = res.data;
 
-                // 解析步骤和链�?
+                // 解析步骤和链接
                 const steps = recipe.step_type === "custom"
                     ? JSON.parse(recipe.steps || "[]")
                     : [""];
@@ -68,6 +63,7 @@ Page({
                         step_type: recipe.step_type,
                         is_public: recipe.is_public === 1,
                     },
+                    coverImageUrl: getImageUrl(recipe.cover_image_key),
                     steps: steps.length > 0 ? steps : [""],
                     links: links.length > 0 ? links : [""],
                     selectedTags: recipe.tags || [],
@@ -94,13 +90,7 @@ Page({
      */
     async loadTags() {
         try {
-            const res = await request({
-                url: "/recipe/tags",
-                method: "POST",
-                data: {
-                    with_count: false,
-                },
-            });
+            const res = await getTags(false);
 
             if (res.code === 200) {
                 this.setData({
@@ -142,17 +132,35 @@ Page({
     /**
      * 上传封面图片
      */
-    uploadCover() {
-        wx.chooseImage({
+    async uploadCover() {
+        wx.chooseMedia({
             count: 1,
+            mediaType: ["image"],
             sizeType: ["compressed"],
             sourceType: ["album", "camera"],
-            success: (res) => {
-                // TODO: 实际项目中需要上传到服务器获�?key
-                // 这里暂时使用本地路径
-                this.setData({
-                    "formData.cover_image_key": res.tempFilePaths[0],
-                });
+            success: async (res) => {
+                showLoading("上传中...");
+                try {
+                    // 上传到服务器获取 key
+                    const uploadResult = await uploadImage(res.tempFiles[0].tempFilePath);
+                    const imageKey = uploadResult.image_key;
+                    this.setData({
+                        "formData.cover_image_key": imageKey,
+                        coverImageUrl: getImageUrl(imageKey),
+                    });
+                    showToast({
+                        title: "上传成功",
+                        icon: "success",
+                    });
+                } catch (error) {
+                    console.error("上传失败:", error);
+                    showToast({
+                        title: error.message || "上传失败",
+                        icon: "none",
+                    });
+                } finally {
+                    hideLoading();
+                }
             },
         });
     },
@@ -234,7 +242,7 @@ Page({
     validateForm() {
         if (!this.data.formData.name.trim()) {
             showToast({
-                title: "请输入菜谱名�?,
+                title: "请输入菜谱名称",
                 icon: "none",
             });
             return false;
@@ -260,7 +268,7 @@ Page({
         }
 
         this.setData({ submitting: true });
-        showLoading(this.data.isEdit ? "保存�?.." : "创建�?..");
+        showLoading(this.data.isEdit ? "保存中.." : "创建中..");
 
         try {
             // 准备提交数据
@@ -270,7 +278,7 @@ Page({
                 is_public: this.data.formData.is_public ? 1 : 0,
             };
 
-            // 可选字�?
+            // 可选字段
             if (this.data.formData.description) {
                 data.description = this.data.formData.description.trim();
             }
@@ -279,7 +287,7 @@ Page({
                 data.cover_image_key = this.data.formData.cover_image_key;
             }
 
-            // 步骤或链�?
+            // 步骤或链接
             if (this.data.formData.step_type === "custom") {
                 const validSteps = this.data.steps.filter(s => s.trim());
                 data.steps = JSON.stringify(validSteps);
@@ -293,18 +301,13 @@ Page({
                 data.tags = this.data.selectedTags;
             }
 
-            // 编辑模式需�?ID
+            // 编辑模式需要ID
             if (this.data.isEdit) {
                 data.id = this.data.recipeId;
             }
 
-            const url = this.data.isEdit ? "/recipe/edit" : "/recipe/create";
-            const res = await request({
-                url,
-                method: "POST",
-                data,
-                needAuth: true,
-            });
+            const apiFunc = this.data.isEdit ? editRecipe : createRecipe;
+            const res = await apiFunc(data);
 
             if (res.code === 200) {
                 showToast({
@@ -316,7 +319,7 @@ Page({
                     if (this.data.isEdit) {
                         wx.navigateBack();
                     } else {
-                        // 创建成功后跳转到详情�?
+                        // 创建成功后跳转到详情页
                         wx.redirectTo({
                             url: `/pages/recipe-detail/recipe-detail?id=${res.data.id}`,
                         });

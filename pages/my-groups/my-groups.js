@@ -19,14 +19,14 @@ Page({
     },
 
     /**
-     * 加载用户组列�?
+     * 加载用户组列表?
      */
     async loadGroups() {
         const { getMyGroups, showLoading, hideLoading, showToast } = require("../../api/index");
 
         try {
             this.setData({ loading: true });
-            showLoading("加载�?..");
+            showLoading("加载中..");
 
             const res = await getMyGroups();
 
@@ -40,7 +40,7 @@ Page({
                 showToast({ title: res.message || "加载失败" });
             }
         } catch (error) {
-            console.error("加载用户组失�?", error);
+            console.error("加载用户组失败?", error);
             showToast({ title: "加载失败，请重试" });
         } finally {
             this.setData({ loading: false });
@@ -80,11 +80,11 @@ Page({
     },
 
     /**
-     * 获取角色的显示文�?
+     * 获取角色的显示文本
      */
     getRoleText(role) {
         const roleMap = {
-            owner: "创建�?,
+            owner: "创建者",
             member: "成员",
         };
         return roleMap[role] || role;

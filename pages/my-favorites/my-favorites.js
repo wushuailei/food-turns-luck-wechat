@@ -1,5 +1,5 @@
-// 我的收藏�?
-import { request, showToast, showLoading, hideLoading } from "../../api/index";
+// 我的收藏
+import { request, showToast, showLoading, hideLoading, getFavoritesList, removeFavorite } from "../../api/index";
 
 Page({
     data: {
@@ -18,10 +18,10 @@ Page({
     },
 
     /**
-     * 页面显示时刷�?
+     * 页面显示时刷新列表
      */
     onShow() {
-        // 从详情页返回时刷新列�?
+        // 从详情页返回时刷新列表
         if (this.data.favorites.length > 0) {
             this.setData({ page: 1 });
             this.loadFavorites(true);
@@ -60,14 +60,9 @@ Page({
         }
 
         try {
-            const res = await request({
-                url: "/user/favorites/list",
-                method: "POST",
-                data: {
-                    page: this.data.page,
-                    pageSize: this.data.pageSize,
-                },
-                needAuth: true,
+            const res = await getFavoritesList({
+                page: this.data.page,
+                pageSize: this.data.pageSize,
             });
 
             if (res.code === 200) {
@@ -112,7 +107,7 @@ Page({
 
         wx.showModal({
             title: "确认取消收藏",
-            content: "确定要取消收藏这个菜谱吗�?,
+            content: "确定要取消收藏这个菜谱吗?",
             success: async (res) => {
                 if (res.confirm) {
                     await this.performRemove(id);
@@ -125,17 +120,10 @@ Page({
      * 执行取消收藏操作
      */
     async performRemove(recipeId) {
-        showLoading("处理�?..");
+        showLoading("处理中..");
 
         try {
-            const res = await request({
-                url: "/user/favorites/remove",
-                method: "POST",
-                data: {
-                    recipe_id: recipeId,
-                },
-                needAuth: true,
-            });
+            const res = await removeFavorite(recipeId);
 
             if (res.code === 200) {
                 showToast({
@@ -164,7 +152,7 @@ Page({
     },
 
     /**
-     * 跳转到首�?
+     * 跳转到首页
      */
     goToHome() {
         wx.switchTab({
